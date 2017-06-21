@@ -25,15 +25,17 @@
 *  Product Key: 9faac2c3dd9332156636017f33a4c9c6
 */
 
-if(!defined('_PS_VERSION_')){exit;}
-
+if (!defined('_PS_VERSION_'))
+{
+	exit;
+}
 class TopBanner extends Module
 {
 	public function __construct()
 	{
 		$this->name = 'topbanner';
 		$this->tab = 'front_office_features';
-		$this->version = '1.0.0';
+		$this->version = '5.0.5';
 		$this->author = 'LaraSoft';
 		$this->need_instance = 0;
 
@@ -75,15 +77,18 @@ class TopBanner extends Module
 	{
 		$values = array();
 		$values['TOPBANNER_IMG'][(int)$id_lang] = $image;
-		$values['SLIDER_ITEM'][(int)$id_lang] = '';
+		$values['SLIDER_ITEM'][(int)$id_lang] = '["Test Slider"]';
+		$values['SLIDER_HEIGHT'][(int)$id_lang] = 45;
 		Configuration::updateValue('TOPBANNER_IMG', $values['TOPBANNER_IMG']);
 		Configuration::updateValue('SLIDER_ITEM', $values['SLIDER_ITEM']);
+		Configuration::updateValue('SLIDER_HEIGHT', $values['SLIDER_HEIGHT']);
 	}
 
 	public function uninstall()
 	{
 		Configuration::deleteByName('TOPBANNER_IMG');
 		Configuration::deleteByName('SLIDER_ITEM');
+		Configuration::deleteByName('SLIDER_HEIGHT');
 		return parent::uninstall();
 	}
 
@@ -97,7 +102,8 @@ class TopBanner extends Module
 				$this->smarty->assign('banner_img', $this->context->link->protocol_content.Tools::getMediaServer($imgname).$this->_path.'views/img/'.$imgname);
 
 			$this->smarty->assign(array(
-				'sitems' => json_decode( Configuration::get('SLIDER_ITEM', $this->context->language->id) )
+				'sitems' => json_decode( Configuration::get('SLIDER_ITEM', $this->context->language->id) ),
+				'height' => Configuration::get('SLIDER_HEIGHT', $this->context->language->id)
 			));
 		}
 
@@ -145,13 +151,13 @@ class TopBanner extends Module
 						$ext = Tools::substr($_FILES['TOPBANNER_IMG_'.$lang['id_lang']]['name'], strrpos($_FILES['TOPBANNER_IMG_'.$lang['id_lang']]['name'], '.') + 1);
 						$file_name = md5($_FILES['TOPBANNER_IMG_'.$lang['id_lang']]['name']).'.'.$ext;
 
-						if (!move_uploaded_file($_FILES['TOPBANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$file_name))
+						if (!move_uploaded_file($_FILES['TOPBANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'views/img'.DIRECTORY_SEPARATOR.$file_name))
 							return $this->displayError($this->l('An error occurred while attempting to upload the file.'));
 						else
 						{
 							if (Configuration::hasContext('TOPBANNER_IMG', $lang['id_lang'], Shop::getContext())
 								&& Configuration::get('TOPBANNER_IMG', $lang['id_lang']) != $file_name)
-								@unlink(dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.Configuration::get('TOPBANNER_IMG', $lang['id_lang']));
+								@unlink(dirname(__FILE__).DIRECTORY_SEPARATOR.'views/img'.DIRECTORY_SEPARATOR.Configuration::get('TOPBANNER_IMG', $lang['id_lang']));
 
 							$values['TOPBANNER_IMG'][$lang['id_lang']] = $file_name;
 						}
@@ -160,13 +166,15 @@ class TopBanner extends Module
 					$update_images_values = true;
 				}
 
-				$values['SLIDER_ITEM'][$lang['id_lang']] = json_encode( Tools::getValue('SLIDER_ITEM') );
+				$values['SLIDER_ITEM'][$lang['id_lang']] = json_encode( array_filter(Tools::getValue('SLIDER_ITEM')) );
+				$values['SLIDER_HEIGHT'][$lang['id_lang']] = Tools::getValue('SLIDER_HEIGHT');
 			}
 
 			if ($update_images_values){
 				Configuration::updateValue('TOPBANNER_IMG', $values['TOPBANNER_IMG']);
 			}
 				Configuration::updateValue('SLIDER_ITEM', $values['SLIDER_ITEM']); //$values['SLIDER_ITEM']
+				Configuration::updateValue('SLIDER_HEIGHT', $values['SLIDER_HEIGHT']); //$values['SLIDER_ITEM']
 			
 			$this->_clearCache('topbanner.tpl');
 			return $this->displayConfirmation($this->l('The settings have been updated.'));
@@ -187,7 +195,18 @@ class TopBanner extends Module
 					'title' => $this->l('Settings'),
 					'icon' => 'icon-cogs'
 				),
+					
+
+
 				'input' => array(
+					array(
+						'type' => 'number',
+						'lang' => true,
+						'label' => $this->l('Slider Height'),
+						'name' => 'SLIDER_HEIGHT',
+						'desc' => $this->l('Set Slider Height in pixel.')
+					), 	
+
 					array(
 						'type' => 'file_lang',
 						'label' => $this->l('Top banner image'),
@@ -195,6 +214,7 @@ class TopBanner extends Module
 						'desc' => $this->l('Upload an image for your top banner background. The recommended dimensions are 1170 x 35px if you are using the default theme.'),
 						'lang' => true,
 					),
+
 					array(
 						'type' => 'text',
 						'lang' => true,
@@ -243,6 +263,7 @@ class TopBanner extends Module
 		{
 			$fields['TOPBANNER_IMG'][$lang['id_lang']] = Tools::getValue('TOPBANNER_IMG_'.$lang['id_lang'], Configuration::get('TOPBANNER_IMG', $lang['id_lang']));
 			$fields['SLIDER_ITEM'][$lang['id_lang']] = Tools::getValue('SLIDER_ITEM', Configuration::get('SLIDER_ITEM', $lang['id_lang']));
+			$fields['SLIDER_HEIGHT'][$lang['id_lang']] = Tools::getValue('SLIDER_HEIGHT', Configuration::get('SLIDER_HEIGHT', $lang['id_lang']));
 
 		}
 

@@ -24,7 +24,6 @@
 */
 
 #laraBanner.banner {
-    height: 45px;
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -36,6 +35,5 @@ div#topslice button {
 	font-weight: bold;
 	font-size: 18px;
 	color: #fff;
-	line-height: 45px; 
 	margin-bottom:0;
 }

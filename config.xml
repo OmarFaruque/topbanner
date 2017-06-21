@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-    <name>topbanner</name>
-    <displayName><![CDATA[Top Banner]]></displayName>
-    <version><![CDATA[1.0.0]]></version>
-    <description><![CDATA[Displays a banner at the top of the shop with slider.]]></description>
-    <author><![CDATA[LaraSoft]]></author>
-    <tab><![CDATA[front_office_features]]></tab>
-    <is_configurable>1</is_configurable>
-    <need_instance>0</need_instance>
+	<name>topbanner</name>
+	<displayName><![CDATA[Top Banner]]></displayName>
+	<version><![CDATA[5.0.5]]></version>
+	<description><![CDATA[Displays a banner at the top of the shop with slider.]]></description>
+	<author><![CDATA[LaraSoft]]></author>
+	<tab><![CDATA[front_office_features]]></tab>
+	<is_configurable>1</is_configurable>
+	<need_instance>0</need_instance>
 	<limited_countries></limited_countries>
 </module>

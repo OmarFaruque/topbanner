@@ -83,7 +83,7 @@
 			</script>
 			{/foreach}
 			{if isset($input.desc) && !empty($input.desc)}
-				<p class="help-block">
+				<p class="help-block help-1">
 					{$input.desc}
 				</p>
 			{/if}
@@ -96,28 +96,49 @@
 	</div>
 	<script type="text/javascript" src="../modules/topbanner/views/js/admin/topbanner.js"></script>
 	{else}
- 	
-			{if $fields_value[$input.name][1]|json_decode:true|@count > 0}
-				{foreach $fields_value[$input.name][1]|json_decode:true as $k => $singT}
+			{if $input.type=='text'}
+			{if is_array($fields_value[$input.name][1]) && $fields_value[$input.name][1]|@count > 0}
+				{foreach $fields_value[$input.name][1] as $k => $singT}
 					{if $singT != ''}
-					{if $k!=0} 
-						<div class="form-group">
-						<label class="control-label col-lg-3">Slider {$k+1}</label>
-					{/if}
-					<div class="col-lg-9">
-						<input type="text" id="{$input.name}_{$k}" name="{$input.name}[]" class="" value="{$singT}" onkeyup="if (isArrowKey(event)) return ;updateFriendlyURL();">
-						<p class="help-block">Write your slider text. If you need to write html you  can write here.</p>
-					</div>
-					{($singT==$fields_value[$input.name][1]|json_decode:true|end)?'':'</div>'}
+						{if $k!=0} 
+							<div class="form-group if">
+							<label class="control-label col-lg-3">Slider {$k+1}</label>
+						{/if}
+						<div class="col-lg-9">
+							<input type="text" id="{$input.name}_{$k}" name="{$input.name}[]" class="" value="{$singT|htmlspecialchars}" onkeyup="if (isArrowKey(event)) return ;updateFriendlyURL();">
+							<p class="help-block help-2">{l s="Write your slider text. If you need to write html you  can write here." d="topbanner"}</p>
+						</div>
+						{($singT==$fields_value[$input.name][1]|end)?'':'</div>'}
+						{/if}
+					{/foreach}
+			{elseif $fields_value[$input.name][1]|json_decode:true|@count > 0 && $fields_value[$input.name][1] && $input.type == 'text' }
+				{assign var=getjsonVal value=$fields_value[$input.name][1]|json_decode:true}
+				{foreach $getjsonVal as $k => $singT}
+					{if $singT != ''}
+						{if $k!=0} 
+							<div class="form-group elseif">
+							<label class="control-label col-lg-3">Slider {$k+1}</label>
+						{/if}
+						<div class="col-lg-9">
+							<input type="text" id="{$input.name}_{$k}" name="{$input.name}[]" class="" value="{$singT|htmlspecialchars}" onkeyup="if (isArrowKey(event)) return ;updateFriendlyURL();">
+							<p class="help-block help-3">{l s="Write your slider text. If you need to write html you  can write here." d="topbanner"}</p>
+						</div>
+						{($singT==$getjsonVal|end)?'':'</div>'}
 					{/if}
 				{/foreach}
 			{else}
 			<div class="col-lg-9">
-				<input type="text" id="{$input.name}_1" name="{$input.name}[]" class="" value="{$fields_value[$input.name][$language.id_lang]}" onkeyup="if (isArrowKey(event)) return ;updateFriendlyURL();">
-				<p class="help-block">Write your slider text. If you need to write html you  can write here.</p>
+				<input type="{$input.type}" id="{$input.name}_1" name="{$input.name}[]" class="" value="{$fields_value[$input.name][1]}" onkeyup="if (isArrowKey(event)) return ;updateFriendlyURL();">
+				<p class="help-block help-4">{l s="{$input.desc}" d="topbanner"}</p>
 			</div>
 			{/if}
-
+			{else}
+			<div class="col-lg-9">
+				<input type="{$input.type}" id="{$input.name}_1" name="{$input.name}" class="form-control" value="{$fields_value[$input.name][1]}" onkeyup="if (isArrowKey(event)) return ;updateFriendlyURL();">
+				<p class="help-block help-4">{l s="{$input.desc}" d="topbanner"}</p>
+			</div>
+			
+			{/if}
 		<!--{$smarty.block.parent}-->
 	{/if}
 {/block}

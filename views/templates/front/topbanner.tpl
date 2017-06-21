@@ -23,13 +23,13 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div class="banner" id="laraBanner" style="background-image: url('{$banner_img}');">
+<div class="banner" id="laraBanner" style="height:{($height)?$height:'45'}px; background-image: url('{$banner_img}');">
 	<div class="container">
 		<div class="row">
 		<div id="topslice">
 			{foreach $sitems as $sitm }
 			<div>
-				<p class="slideWrap" style="text-align: center;">{$sitm}</p>
+				<p class="slideWrap" style="line-height:{($height)?$height:'45'}px; text-align: center;">{$sitm}</p>
 			</div>
 			{/foreach}
 		</div>
